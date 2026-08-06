@@ -1,0 +1,56 @@
+import java.util.*;
+
+public class Solution {
+    
+    // Class to represent a plant and the days it takes to die
+    static class Plant {
+        int pesticide;
+        int daysToDie;
+
+        Plant(int pesticide, int daysToDie) {
+            this.pesticide = pesticide;
+            this.daysToDie = daysToDie;
+        }
+    }
+
+    public static int poisonousPlants(int[] p) {
+        Stack<Plant> stack = new Stack<>();
+        int maxDays = 0;
+
+        for (int pesticide : p) {
+            int daysAlive = 0;
+
+            // Pop elements from the stack that have a higher or equal pesticide level
+            while (!stack.isEmpty() && pesticide <= stack.peek().pesticide) {
+                daysAlive = Math.max(daysAlive, stack.pop().daysToDie);
+            }
+
+            // If the stack becomes empty, this plant has less pesticide than 
+            // all elements to its left, meaning it will never die.
+            if (stack.isEmpty()) {
+                daysAlive = 0;
+            } else {
+                // Otherwise, it dies 1 day after the bottlenecking plants to its left die
+                daysAlive += 1;
+            }
+
+            maxDays = Math.max(maxDays, daysAlive);
+            stack.push(new Plant(pesticide, daysAlive));
+        }
+
+        return maxDays;
+    }
+
+    public static void main(String[] args) {
+        Scanner sc = new Scanner(System.in);
+        if (sc.hasNextInt()) {
+            int n = sc.nextInt();
+            int[] p = new int[n];
+            for (int i = 0; i < n; i++) {
+                p[i] = sc.nextInt();
+            }
+            System.out.println(poisonousPlants(p));
+        }
+        sc.close();
+    }
+}
