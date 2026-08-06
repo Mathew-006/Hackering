@@ -1,0 +1,64 @@
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.io.IOException;
+import java.util.StringTokenizer;
+import java.util.Stack;
+
+public class Solution {
+    public static void main(String[] args) throws IOException {
+        // Fast I/O components
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        StringBuilder outputBuffer = new StringBuilder();
+        StringTokenizer st = null;
+
+        // Read number of operations
+        String line = br.readLine();
+        if (line == null) return;
+        int q = Integer.parseInt(line.trim());
+
+        // State trackers
+        String currentString = "";
+        Stack<String> historyStack = new Stack<>();
+
+        for (int i = 0; i < q; i++) {
+            line = br.readLine();
+            if (line == null) break;
+            st = new StringTokenizer(line);
+            
+            if (!st.hasMoreTokens()) continue;
+            String type = st.nextToken();
+
+            switch (type) {
+                case "1":
+                    // Append operation
+                    String w = st.nextToken();
+                    historyStack.push(currentString);
+                    currentString += w;
+                    break;
+
+                case "2":
+                    // Delete operation
+                    int k = Integer.parseInt(st.nextToken());
+                    historyStack.push(currentString);
+                    currentString = currentString.substring(0, currentString.length() - k);
+                    break;
+
+                case "3":
+                    // Print operation
+                    int index = Integer.parseInt(st.nextToken());
+                    outputBuffer.append(currentString.charAt(index - 1)).append("\n");
+                    break;
+
+                case "4":
+                    // Undo operation
+                    if (!historyStack.isEmpty()) {
+                        currentString = historyStack.pop();
+                    }
+                    break;
+            }
+        }
+
+        // Write all output at once
+        System.out.print(outputBuffer);
+    }
+}
