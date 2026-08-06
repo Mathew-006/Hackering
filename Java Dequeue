@@ -1,0 +1,50 @@
+import java.util.Scanner;
+import java.util.ArrayDeque;
+import java.util.HashMap;
+
+public class Solution {
+    public static void main(String[] args) {
+        Scanner in = new Scanner(System.in);
+        ArrayDeque<Integer> deque = new ArrayDeque<Integer>();
+        HashMap<Integer, Integer> frequencyMap = new HashMap<Integer, Integer>();
+        
+        int n = in.nextInt();
+        int m = in.nextInt();
+        int maxUnique = 0;
+
+        for (int i = 0; i < n; i++) {
+            int num = in.nextInt();
+            
+            // Add new element to window
+            deque.addLast(num);
+            
+            // Java 7 compatible alternative to getOrDefault()
+            int currentCount = frequencyMap.containsKey(num) ? frequencyMap.get(num) : 0;
+            frequencyMap.put(num, currentCount + 1);
+            
+            // If window exceeds size m, shrink it from the left
+            if (deque.size() > m) {
+                int removed = deque.removeFirst();
+                int count = frequencyMap.get(removed);
+                if (count == 1) {
+                    frequencyMap.remove(removed);
+                } else {
+                    frequencyMap.put(removed, count - 1);
+                }
+            }
+            
+            // Track maximum unique elements when a full window of size m is formed
+            if (deque.size() == m) {
+                maxUnique = Math.max(maxUnique, frequencyMap.size());
+                
+                // Optimization: If max possible unique elements reached, break early
+                if (maxUnique == m) {
+                    break;
+                }
+            }
+        }
+        
+        System.out.println(maxUnique);
+        in.close();
+    }
+}
