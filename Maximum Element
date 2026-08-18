@@ -1,0 +1,43 @@
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.io.IOException;
+import java.util.Stack;
+
+public class Solution {
+    public static void main(String[] args) throws IOException {
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        StringBuilder sb = new StringBuilder();
+        
+        int n = Integer.parseInt(br.readLine().trim());
+        
+        Stack<Integer> mainStack = new Stack<>();
+        Stack<Integer> maxStack = new Stack<>();
+        
+        for (int i = 0; i < n; i++) {
+            String[] query = br.readLine().trim().split(" ");
+            int type = Integer.parseInt(query[0]);
+            
+            if (type == 1) {
+                int val = Integer.parseInt(query[1]);
+                mainStack.push(val);
+                // Push to maxStack if it's empty or val is >= current max
+                if (maxStack.isEmpty() || val >= maxStack.peek()) {
+                    maxStack.push(val);
+                }
+            } else if (type == 2) {
+                if (!mainStack.isEmpty()) {
+                    int popped = mainStack.pop();
+                    // Pop from maxStack only if it matches the current max
+                    if (popped == maxStack.peek()) {
+                        maxStack.pop();
+                    }
+                }
+            } else if (type == 3) {
+                if (!maxStack.isEmpty()) {
+                    sb.append(maxStack.peek()).append("\n");
+                }
+            }
+        }
+        System.out.print(sb.toString());
+    }
+}
