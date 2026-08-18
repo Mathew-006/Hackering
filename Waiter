@@ -1,0 +1,90 @@
+import java.io.*;
+import java.util.*;
+
+public class Solution {
+
+    // Helper method to generate the first Q prime numbers
+    private static List<Integer> generatePrimes(int q) {
+        List<Integer> primes = new ArrayList<Integer>();
+        int number = 2;
+        while (primes.size() < q) {
+            boolean isPrime = true;
+            for (int i = 2; i <= Math.sqrt(number); i++) {
+                if (number % i == 0) {
+                    isPrime = false;
+                    break;
+                }
+            }
+            if (isPrime) {
+                primes.add(number);
+            }
+            number++;
+        }
+        return primes;
+    }
+
+    public static List<Integer> waiter(List<Integer> number, int q) {
+        List<Integer> answers = new ArrayList<Integer>();
+        List<Integer> primes = generatePrimes(q);
+        
+        // Use a Stack to represent the current main pile A
+        Stack<Integer> currentA = new Stack<Integer>();
+        for (int num : number) {
+            currentA.push(num);
+        }
+
+        // Process for Q iterations
+        for (int i = 0; i < q; i++) {
+            int currentPrime = primes.get(i);
+            Stack<Integer> nextA = new Stack<Integer>();
+            Stack<Integer> currentB = new Stack<Integer>();
+
+            // Pop everything from the current main pile
+            while (!currentA.isEmpty()) {
+                int value = currentA.pop();
+                if (value % currentPrime == 0) {
+                    currentB.push(value);
+                } else {
+                    nextA.push(value);
+                }
+            }
+
+            // Elements in B are popped and added to the answers list directly
+            while (!currentB.isEmpty()) {
+                answers.add(currentB.pop());
+            }
+
+            // Move to the next remaining pile A
+            currentA = nextA;
+        }
+
+        // Remaining elements in the final A pile are popped and added to answers
+        while (!currentA.isEmpty()) {
+            answers.add(currentA.pop());
+        }
+
+        return answers;
+    }
+
+    public static void main(String[] args) throws IOException {
+        BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(System.in));
+        
+        String[] firstLine = bufferedReader.readLine().replaceAll("\\s+$", "").split(" ");
+        int n = Integer.parseInt(firstLine[0]);
+        int q = Integer.parseInt(firstLine[1]);
+
+        String[] tokens = bufferedReader.readLine().replaceAll("\\s+$", "").split(" ");
+        List<Integer> number = new ArrayList<Integer>();
+        for (int i = 0; i < n; i++) {
+            number.add(Integer.parseInt(tokens[i]));
+        }
+
+        List<Integer> result = waiter(number, q);
+
+        for (int i = 0; i < result.size(); i++) {
+            System.out.println(result.get(i));
+        }
+
+        bufferedReader.close();
+    }
+}
