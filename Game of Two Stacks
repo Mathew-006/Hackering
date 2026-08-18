@@ -1,0 +1,73 @@
+import java.io.*;
+import java.util.*;
+
+public class Solution {
+
+    public static int gameOfTwoStacks(int maxSum, List<Integer> a, List<Integer> b) {
+        int countA = 0;
+        int countB = 0;
+        long currentSum = 0; // Use long to prevent any potential integer overflow
+
+        // Step 1: Take as many elements as possible from stack A
+        while (countA < a.size() && currentSum + a.get(countA) <= maxSum) {
+            currentSum += a.get(countA);
+            countA++;
+        }
+
+        // Initialize max score with elements only from A
+        int maxElements = countA;
+
+        // Step 2: Try adding elements from stack B while adjusting stack A
+        while (countB < b.size()) {
+            currentSum += b.get(countB);
+            countB++;
+
+            // If the sum exceeds maxSum, remove elements from the top of stack A choices
+            while (currentSum > maxSum && countA > 0) {
+                countA--;
+                currentSum -= a.get(countA);
+            }
+
+            // If the sum is valid, check if this combination gives a higher score
+            if (currentSum <= maxSum) {
+                int currentElements = countA + countB;
+                if (currentElements > maxElements) {
+                    maxElements = currentElements;
+                }
+            } else {
+                // If sum is still too big and we can't remove any more from A, stop
+                break;
+            }
+        }
+
+        return maxElements;
+    }
+
+    public static void main(String[] args) throws IOException {
+        BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(System.in));
+        int games = Integer.parseInt(bufferedReader.readLine().trim());
+
+        for (int g = 0; g < games; g++) {
+            String[] firstLine = bufferedReader.readLine().replaceAll("\\s+$", "").split(" ");
+            int n = Integer.parseInt(firstLine[0]);
+            int m = Integer.parseInt(firstLine[1]);
+            int maxSum = Integer.parseInt(firstLine[2]);
+
+            String[] tokensA = bufferedReader.readLine().replaceAll("\\s+$", "").split(" ");
+            List<Integer> a = new ArrayList<Integer>();
+            for (int i = 0; i < n; i++) {
+                a.add(Integer.parseInt(tokensA[i]));
+            }
+
+            String[] tokensB = bufferedReader.readLine().replaceAll("\\s+$", "").split(" ");
+            List<Integer> b = new ArrayList<Integer>();
+            for (int i = 0; i < m; i++) {
+                b.add(Integer.parseInt(tokensB[i]));
+            }
+
+            int result = gameOfTwoStacks(maxSum, a, b);
+            System.out.println(result);
+        }
+        bufferedReader.close();
+    }
+}
