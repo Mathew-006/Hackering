@@ -1,0 +1,49 @@
+import java.io.*;
+import java.util.*;
+
+public class Solution {
+
+    public static int andXorOr(int[] a) {
+        int maxSi = 0;
+        Stack<Integer> stack = new Stack<Integer>();
+
+        for (int i = 0; i < a.length; i++) {
+            while (!stack.isEmpty()) {
+                int top = stack.peek();
+                
+                // Calculate the expression value: (((M1 & M2) ^ (M1 | M2)) & (M1 ^ M2))
+                // Bitwise property simplification: This expression always evaluates exactly to (M1 ^ M2)
+                int currentSi = top ^ a[i];
+                if (currentSi > maxSi) {
+                    maxSi = currentSi;
+                }
+
+                // If current element is smaller, it pops the top element
+                if (a[i] < top) {
+                    stack.pop();
+                } else {
+                    break;
+                }
+            }
+            stack.push(a[i]);
+        }
+        return maxSi;
+    }
+
+    public static void main(String[] args) throws IOException {
+        BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(System.in));
+        
+        int n = Integer.parseInt(bufferedReader.readLine().trim());
+        int[] a = new int[n];
+        
+        String[] tokens = bufferedReader.readLine().replaceAll("\\s+$", "").split(" ");
+        for (int i = 0; i < n; i++) {
+            a[i] = Integer.parseInt(tokens[i]);
+        }
+
+        int result = andXorOr(a);
+        System.out.println(result);
+
+        bufferedReader.close();
+    }
+}
