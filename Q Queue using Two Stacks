@@ -1,0 +1,37 @@
+import java.io.*;
+import java.util.*;
+
+public class Solution {
+
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+        int q = scanner.nextInt();
+        
+        Stack<Integer> stackNewestOnTop = new Stack<>();
+        Stack<Integer> stackOldestOnTop = new Stack<>();
+        
+        for (int i = 0; i < q; i++) {
+            int type = scanner.nextInt();
+            
+            if (type == 1) {
+                int x = scanner.nextInt();
+                stackNewestOnTop.push(x);
+            } else if (type == 2) {
+                shiftStacks(stackNewestOnTop, stackOldestOnTop);
+                stackOldestOnTop.pop();
+            } else if (type == 3) {
+                shiftStacks(stackNewestOnTop, stackOldestOnTop);
+                System.out.println(stackOldestOnTop.peek());
+            }
+        }
+        scanner.close();
+    }
+    
+    private static void shiftStacks(Stack<Integer> newest, Stack<Integer> oldest) {
+        if (oldest.isEmpty()) {
+            while (!newest.isEmpty()) {
+                oldest.push(newest.pop());
+            }
+        }
+    }
+}
