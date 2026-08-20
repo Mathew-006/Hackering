@@ -1,0 +1,37 @@
+import java.io.*;
+import java.util.*;
+
+public class Solution {
+    public static void main(String[] args) throws IOException {
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        int n = Integer.parseInt(br.readLine().trim());
+        char[][] g = new char[n][n];
+        for (int i = 0; i < n; i++) g[i] = br.readLine().toCharArray();
+        String[] p = br.readLine().split(" ");
+        int sx = Integer.parseInt(p[0]), sy = Integer.parseInt(p[1]), gx = Integer.parseInt(p[2]), gy = Integer.parseInt(p[3]);
+
+        int[][] vis = new int[n][n];
+        for (int[] row : vis) Arrays.fill(row, -1);
+        Queue<int[]> q = new LinkedList<>();
+        q.add(new int[]{sx, sy});
+        vis[sx][sy] = 0;
+
+        int[] dr = {-1, 1, 0, 0}, dc = {0, 0, -1, 1};
+        while (!q.isEmpty()) {
+            int[] cur = q.poll();
+            if (cur[0] == gx && cur[1] == gy) {
+                System.out.println(vis[cur[0]][cur[1]]);
+                return;
+            }
+            for (int i = 0; i < 4; i++) {
+                int nr = cur[0], nc = cur[1];
+                while ((nr += dr[i]) >= 0 && nr < n && (nc += dc[i]) >= 0 && nc < n && g[nr][nc] != 'X') {
+                    if (vis[nr][nc] == -1) {
+                        vis[nr][nc] = vis[cur[0]][cur[1]] + 1;
+                        q.add(new int[]{nr, nc});
+                    }
+                }
+            }
+        }
+    }
+}
