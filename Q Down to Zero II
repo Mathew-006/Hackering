@@ -1,0 +1,32 @@
+import java.io.*;
+import java.util.*;
+
+public class Solution {
+    public static void main(String[] args) throws IOException {
+        int max = 1000000;
+        int[] dp = new int[max + 1];
+        Arrays.fill(dp, -1);
+        dp[0] = 0;
+
+        for (int i = 1; i <= max; i++) {
+            if (dp[i] == -1 || dp[i] > dp[i - 1] + 1) {
+                dp[i] = dp[i - 1] + 1;
+            }
+            for (int j = 2; j <= i && i * j <= max; j++) {
+                if (dp[i * j] == -1 || dp[i * j] > dp[i] + 1) {
+                    dp[i * j] = dp[i] + 1;
+                }
+            }
+        }
+
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        int q = Integer.parseInt(br.readLine().trim());
+        StringBuilder sb = new StringBuilder();
+        
+        while (q-- > 0) {
+            int n = Integer.parseInt(br.readLine().trim());
+            sb.append(dp[n]).append("\n");
+        }
+        System.out.print(sb);
+    }
+}
